@@ -8,21 +8,41 @@
 <body style="background-color: #DCDCDC">
 
 <form action="" method="get" >
-    <p>Balance:<var></var><output ><input></p>
+    <p>Balance:<var></var></p>
 </form>
 <form action="" method="post">
 <!--    {% csrf_token %}-->
 <!--    {{ form.as_p }}-->
     <fieldset align="center" style="width: 50%">
         <legend align="left"><h4>Add transaction</h4></legend>
-    <p align="left">Type:<input autofocus style="border:1px #00008B solid; width: 150px; " type="text" name="Login" placeholder="Придумайте логин" required /></p>
-    <p align="left">Date:<input style="border:3px ##00008B; width: 150px" type="text" name="Password" placeholder="Придумайте пароль" required /></p>
-    <p align="left">Category:<input style="border:3px ##00008B; width: 150px" type="text" name="Email" placeholder="Ваш email" required /></p>
-    <p align="left">Amount:<input style="border:3px ##00008B; width: 150px" type="text" name="Email" placeholder="Ваш email" required /></p>
-    <p align="left">Comment:<input style="border:3px ##00008B; width: 150px" type="text" name="Email" placeholder="Ваш email" required /></p>
-    <p align="left"><input type="submit" value="Add Transaction" /></p>
+    <p align="left">Type:<input style="border:1px #00008B solid; width: 150px; " type="text" name="Login" required /></p>
+    <p align="left">Date:<input style="border:3px ##00008B; width: 150px" type="text" name="Password" required /></p>
+    <p align="left">Category:<input style="border:3px ##00008B; width: 150px" type="text" name="Email" required /></p>
+    <p align="left">Amount:<input style="border:3px ##00008B; width: 150px" type="text" name="Email" required /></p>
+    <p align="left">Comment:<input style="border:3px ##00008B; width: 150px" type="text" required /></p>
+    <p align="left"><input type="submit" value="Add Transaction" style="margin-left: 50px" /></p>
 
 <!--    <p>name="Sign up" type="submit" value="Sign up" style="vertical-align: middle"<button>Sign up</button> </p>-->
+    </fieldset>
+</form>
+<form>
+    <fieldset align="center" style="width: 50%">
+        <legend align="left"><h4>Filters</h4></legend>
+        <div align="left">
+            <ul style="display: inline" role="list">
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" >Start date</li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" >End date</li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" >Min,amount</li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" >Type</li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" >Category</li>
+            </ul>
+        </div>
+    </fieldset>
+</form>
+<form>
+    <fieldset align="center" style="width: 50%">
+        <legend align="left"><h4>Transactions</h4></legend>
+<!--        Сделать табличку-->
     </fieldset>
 </form>
 </body>
