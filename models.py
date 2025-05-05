@@ -10,6 +10,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, index=True)
     password_hash = Column(String)
+    email = Column(String)
     categories = relationship("Category", back_populates="user")
     transactions = relationship("Transaction", back_populates="user")
 
@@ -33,7 +34,7 @@ class Transaction(Base):
     status_id = Column(BigInteger, ForeignKey("trans_status.id"))
     category_id = Column(BigInteger, ForeignKey("category.id"))
     person_typeID = Column(Integer, ForeignKey("person_type.id"))
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)  # Дата и время транзакции
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
     amount = Column(BigInteger)
     comment = Column(String)
     sender_bank = Column(String)

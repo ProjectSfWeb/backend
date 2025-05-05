@@ -1,9 +1,9 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import Optional
+from typing import Optional, Any, Self
+from datetime import datetime, date
 
 
 class TransactionCreate(BaseModel):
-    user_id: int
     transTypeID: int
     category_name: str
     amount: int
@@ -30,6 +30,29 @@ class TransactionCreate(BaseModel):
             raise ValueError("Некорректный формат ИНН")
         return v
 
+
+class TransactionUpdate(TransactionCreate):
+    person_typeID: Optional[int]
+    timestamp: Optional[date]
+    comment: Optional[str]
+    amount: Optional[int]
+    status_id: Optional[int]
+    sender_bank: Optional[str]
+    receiver_bank: Optional[str]
+    rec_inn: Optional[str]
+    category_name: Optional[str]
+    rec_phone: Optional[str]
+
+    # @field_validator("timestamp")
+    # def validate_date_format(cls, value):
+    #     if value:
+    #         try:
+    #             return datetime.strptime(value, "%d.%m.%Y")
+    #         except ValueError:
+    #             raise ValueError("Дата должна быть в формате ДД.ММ.ГГГГ, например 01.01.2025")
+    #     return value
+
+
 class TransactionTypeSchema(BaseModel):
     id: int
     name: str
@@ -48,3 +71,5 @@ class TransactionStatusSchema(BaseModel):
 class PersonTypeSchema(BaseModel):
     id: int
     name: str
+
+
