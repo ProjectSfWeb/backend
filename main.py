@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from database import engine
 import models
 
-from routers import balance, filters, transactions, auth
+from routers import balance, filters, transactions, auth, transaction_excel
 
 app = FastAPI()
 
@@ -13,6 +13,7 @@ app.include_router(balance.router)
 app.include_router(filters.router)
 app.include_router(transactions.router)
 app.include_router(auth.router)
+app.include_router(transaction_excel.router)
 
 
 @app.get("/")

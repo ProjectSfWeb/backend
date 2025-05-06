@@ -1,3 +1,5 @@
+import re
+
 from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Any, Self
 from datetime import datetime, date
@@ -19,13 +21,22 @@ class TransactionCreate(BaseModel):
     rec_acc: str
     rec_phone: str
 
+    @field_validator("amount")
+    def validate_amount(cls, v):
+        """
+        Валидатор баланса
+        """
+        if v < 0:
+            raise ValueError("Баланс не может быть отрицательным")
+        return v
+
 
     @field_validator("rec_phone")
     def validate_rec_phone(cls, v):
         """
         Валидатор номера телефона
         """
-        if not(v.startswith("+7") or v.startswith("8")):
+        if not re.match(r"^\+79\d{9}|89\d{9}$", v):
             raise ValueError("Некорректный формат номера")
         return v
 
@@ -35,7 +46,7 @@ class TransactionCreate(BaseModel):
         """
         Валидатор ИНН
         """
-        if not(len(v) == 12):
+        if not re.match(r"^\d{11}$", v):
             raise ValueError("Некорректный формат ИНН")
         return v
 
@@ -54,6 +65,15 @@ class TransactionUpdate(TransactionCreate):
     rec_inn: Optional[str]
     category_name: Optional[str]
     rec_phone: Optional[str]
+
+    @field_validator("amount")
+    def validate_amount(cls, v):
+        """
+        Валидатор баланса
+        """
+        if v < 0:
+            raise ValueError("Цена не может быть меньше 0")
+        return v
 
 
 
