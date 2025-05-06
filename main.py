@@ -2,13 +2,11 @@ import uvicorn
 from fastapi import FastAPI
 from database import engine
 import models
-from fastapi.openapi.utils import get_openapi
 
 from routers import balance, filters, transactions, auth
 
 app = FastAPI()
 
-# Создаём таблицы
 models.Base.metadata.create_all(bind=engine)
 
 app.include_router(balance.router)

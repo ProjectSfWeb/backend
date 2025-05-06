@@ -5,6 +5,7 @@ from database import get_db
 import models
 from models import User
 from utils.jwt import get_current_user
+
 router = APIRouter(tags=["Balance"])
 
 @router.get("/balance/")
@@ -12,7 +13,12 @@ def calculate_balance(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    """Расчет баланса доходов и расходов"""
+    """Расчет баланса доходов и расходов
+
+    :param db: Синхронная сессия для работы с бд
+    :param current_user: Зависимость для проверки токена пользователя(авторизован или нет)
+    :return: json с балансом, доходом и расходом
+    """
     # Запрос для суммы доходов (transTypeID=0)
     income = db.query(func.sum(models.Transaction.amount)).filter(
         and_(

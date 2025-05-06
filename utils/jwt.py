@@ -10,21 +10,32 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import User
 
-# Импорт переменных окружения (секретный ключ и алгоритм)
 from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-# Создание JWT-токена
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """
+    Создание токена пользователя
+
+    :param data: Словарь с id пользователя для генерации токена
+    :param expires_delta: Время существования токена
+    :return: Токен пользователя
+    """
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=60))
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
-# Проверка токена
 def verify_access_token(token: str, credentials_exception):
+    """
+    Проверка токена на валидность
+
+    :param token: Токен
+    :param credentials_exception:
+    :return: id пользователя с валидным токеном
+    """
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id: int = payload.get("user_id")
@@ -36,14 +47,25 @@ def verify_access_token(token: str, credentials_exception):
 
 
 def get_token(request: Request):
+    """
+    Берет токен из браузера
+    :param request: Запрос токена
+    :return: возвращает токен пользователя
+    """
     token = request.cookies.get('access_token')
     if not token:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Token not found')
     return token
 
 
-# Получение текущего пользователя по токену
 def get_current_user(token: str = Depends(get_token), db: Session = Depends(get_db)) -> User:
+    """
+    Возвращает текущего авторизованного пользователя
+
+    :param token:
+    :param db: Синхронная сессия для работы с бд
+    :return: Возвращает авторизованного пользователя
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

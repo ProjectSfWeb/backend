@@ -8,16 +8,33 @@ from schemas.user import UserCreate, UserLogin
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# Хеширование пароля
 def hash_password(password: str) -> str:
+    """
+    Хэширует пароль пользователя
+
+    :param password: Нехешированный пароль
+    :return: Хешированный пароль
+    """
     return pwd_context.hash(password)
 
-# Проверка соответствия пароля
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Проверка введенного пароля
+
+    :param plain_password: Введенный пароль
+    :param hashed_password: Хешированный пароль
+    :return: True если пароли совпали, False если нет
+    """
     return pwd_context.verify(plain_password, hashed_password)
 
-# Регистрация пользователя
 def register_user(db: Session, user: UserCreate):
+    """
+    Регистрация пользователя. Хеширует пароль и вносит данные пользователя в бд
+
+    :param db: Синхронная сессия для работы с бд
+    :param user: Pydenctic модель для создания пользователя
+    :return: Объект бд с новым пользователем
+    """
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
         raise HTTPException(
@@ -33,8 +50,15 @@ def register_user(db: Session, user: UserCreate):
     db.refresh(new_user)
     return new_user
 
-# Авторизация пользователя
 def login_user(db: Session, user_data: UserLogin):
+    """
+    Логика авторизации пользователя. Сравнивает пароль и логин пользователя со значением из бд.
+    В случае корректных данных выдает токен
+
+    :param db: Синхронная сессия для работы с бд
+    :param user_data: Pydentic модель пользователя для авторизации
+    :return: Токен пользователя
+    """
     user = db.query(User).filter(User.username == user_data.login).first()
     if not user or not verify_password(user_data.password, user.password_hash):
         raise HTTPException(

@@ -17,6 +17,10 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     """
     Регистрирует нового пользователя.
     Хеширует пароль и записывает данные в БД.
+
+    :param user_data: Pydentic модель для создания нового пользователя
+    :param db: Синхронная сессия для работы с базой данных
+    :return: Зарегистрированный пользователь (Модель UserResponse)
     """
     return register_user(db=db, user=user_data)
 
@@ -25,7 +29,12 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
 def login(response: Response, user_data: UserLogin, db: Session = Depends(get_db)):
     """
     Авторизует пользователя.
-    Проверяет логин/пароль и возвращает access-токен.
+    Проверяет логин/пароль и устанавливавет токен в Cookie.
+
+    :param response: устанавливает токен в Cookie
+    :param user_data: Pydentic модель пользователя для логина
+    :param db: Синхронная сессия для работы с базой данных
+    :return: Уведомление об успешном входе либо HTTP ошибку
     """
     token = login_user(db=db, user_data=user_data)
     response.set_cookie(

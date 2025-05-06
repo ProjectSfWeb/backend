@@ -4,6 +4,9 @@ from datetime import datetime, date
 
 
 class TransactionCreate(BaseModel):
+    """
+    Схема для создания новой транзакции
+    """
     transTypeID: int
     category_name: str
     amount: int
@@ -19,6 +22,9 @@ class TransactionCreate(BaseModel):
 
     @field_validator("rec_phone")
     def validate_rec_phone(cls, v):
+        """
+        Валидатор номера телефона
+        """
         if not(v.startswith("+7") or v.startswith("8")):
             raise ValueError("Некорректный формат номера")
         return v
@@ -26,12 +32,18 @@ class TransactionCreate(BaseModel):
 
     @field_validator("rec_inn")
     def validate_rec_inn(cls, v):
+        """
+        Валидатор ИНН
+        """
         if not(len(v) == 12):
             raise ValueError("Некорректный формат ИНН")
         return v
 
 
 class TransactionUpdate(TransactionCreate):
+    """
+    Схема для обновления транзакции
+    """
     person_typeID: Optional[int]
     timestamp: Optional[date]
     comment: Optional[str]
@@ -43,32 +55,36 @@ class TransactionUpdate(TransactionCreate):
     category_name: Optional[str]
     rec_phone: Optional[str]
 
-    # @field_validator("timestamp")
-    # def validate_date_format(cls, value):
-    #     if value:
-    #         try:
-    #             return datetime.strptime(value, "%d.%m.%Y")
-    #         except ValueError:
-    #             raise ValueError("Дата должна быть в формате ДД.ММ.ГГГГ, например 01.01.2025")
-    #     return value
 
 
 class TransactionTypeSchema(BaseModel):
+    """
+    Схема типа транзакции
+    """
     id: int
     name: str
 
 
 class CategorySchema(BaseModel):
+    """
+    Схема категорий транзакции
+    """
     id: int
     name: str
 
 
 class TransactionStatusSchema(BaseModel):
+    """
+    Схема статуса транзакции
+    """
     id: int
     name: str
 
 
 class PersonTypeSchema(BaseModel):
+    """
+    Схема типа лица
+    """
     id: int
     name: str
 

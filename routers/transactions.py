@@ -22,19 +22,21 @@ def create_transaction(
     Валидирует инн, номер телефона. Также принимает категорию транзакции.
     В случае, если пользователь ранее не вносил подобную категорию, данная категория записывается в базу данных.
     Привязывается к конкретному пользователю
+
+    :param data: Pydentic модель новой транзакции
+    :param db: Синхронная сессия для работы с бд
+    :param current_user: Зависимость для проверки токена(авторизован или нет)
+    :return: Добаленную транзакцию или уведомление об ошибке
     """
     try:
-        # Проверка, есть ли такая категория уже
         category = db.query(models.Category).filter_by(name=data.category_name,
                                                        user_id=current_user.id).first()
         if not category:
-            # Если нет — создаём новую
             category = models.Category(name=data.category_name, user_id=current_user.id)
             db.add(category)
             db.commit()
             db.refresh(category)
 
-        # Создаём объект транзакции
         transaction = models.Transaction(
             user_id=current_user.id,
             transTypeID=data.transTypeID,
@@ -67,17 +69,18 @@ def create_transaction(
 @router.put("/transactions/{transaction_id}")
 def edit_transaction(
     transaction_id: int,
-    data: TransactionUpdate,  # это твоя схема для редактирования
+    data: TransactionUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """
-    Обновление транзакции
-    :param transaction_id:
-    :param data:
-    :param db:
-    :param current_user:
-    :return:
+    Обновление транзакции. Разрешено обновлять только транзакции со статусом "Новая"
+
+    :param transaction_id: Параметр пути, id транзакции, которую необходимо обновить
+    :param data: Pydentic модель для обновления транзакци. Обновлять можно только поля из ТЗ
+    :param db: Синхронная сессия для работы с бд
+    :param current_user: Зависимость для проверки токена пользвователя(авторизован или нет)
+    :return: Обновленную транзакцию, либо сообщение об ошибке
     """
     transaction = db.query(models.Transaction).filter_by(id=transaction_id, user_id=current_user.id).first()
     if not transaction:
@@ -86,20 +89,15 @@ def edit_transaction(
     if transaction.status_id != 0:
         raise HTTPException(status_code=403, detail="Редактирование запрещено — статус не 'новая'")
 
-    # time_passed = datetime.utcnow() - transaction.timestamp
-    # if time_passed > timedelta(minutes=1):
-    #     raise HTTPException(status_code=403, detail="Редактирование запрещено — статус не 'новая'")
 
     category = db.query(models.Category).filter_by(name=data.category_name,
                                                    user_id=current_user.id).first()
     if not category:
-        # Если нет — создаём новую
         category = models.Category(name=data.category_name, user_id=current_user.id)
         db.add(category)
         db.commit()
         db.refresh(category)
 
-    # Теперь обновляем нужные поля
     transaction.person_typeID = data.person_typeID
     transaction.timestamp = data.timestamp
     transaction.comment = data.comment
@@ -119,7 +117,6 @@ def edit_transaction(
 
 DELETED_STATUS_ID = 5
 
-# Запрещенные для удаления статусы
 FORBIDDEN_TO_DELETE = {1, 2, 3, 4, 6}
 
 @router.delete("/transactions/{transaction_id}")
@@ -127,10 +124,10 @@ def delete_transaction(transaction_id: int, db: Session = Depends(get_db),
                        current_user: User = Depends(get_current_user)):
     """
     Удаление транзакции
-    :param transaction_id:
-    :param db:
-    :param current_user:
-    :return:
+    :param transaction_id: Параметр пути, id транзакции для удаления
+    :param db: Синхронная сессия для работы с базой данных
+    :param current_user: Зависимость для проверки токена(авторизован или нет)
+    :return: Уведомление об успешном удалении транзакции
     """
     transaction = db.query(models.Transaction).filter(
         models.Transaction.id == transaction_id,
@@ -172,4 +169,9 @@ def get_trans_status(db: Session = Depends(get_db)):
 
 @router.get("/person-type/", response_model=list[PersonTypeSchema])
 def get_trans_status(db: Session = Depends(get_db)):
+    """
+    Для фронта, формирование выпадающего списка типа лица
+    :param db:
+    :return:
+    """
     return db.query(models.PersonType).all()
