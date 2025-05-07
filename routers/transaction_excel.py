@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Response
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from database import get_db
 from utils.jwt import get_current_user
 import models
@@ -24,14 +24,23 @@ async def get_transactions_excel(
     Требует аутентификации.
     """
 
-    transactions = db.query(models.Transaction).filter(models.Transaction.user_id == current_user.id).all()
+    transactions = (
+        db.query(models.Transaction)
+        .options(
+            joinedload(models.Transaction.trans_type),
+            joinedload(models.Transaction.trans_status),
+            joinedload(models.Transaction.category),
+            joinedload(models.Transaction.person_type),
+        )
+        .filter(models.Transaction.user_id == current_user.id)
+        .all()
+    )
 
     if not transactions:
         raise HTTPException(status_code=404, detail="No transactions found for this user")
 
-    transaction_data = []
-    for transaction in transactions:
-        transaction_data.append({
+    transaction_data = [
+        {
             "ID": transaction.id,
             "Дата и время": transaction.timestamp,
             "Сумма": transaction.amount,
@@ -46,7 +55,9 @@ async def get_transactions_excel(
             "ИНН получателя": transaction.rec_inn,
             "Счет получателя": transaction.rec_acc,
             "Телефон получателя": transaction.rec_phone,
-        })
+        }
+        for transaction in transactions
+    ]
 
     df = pd.DataFrame(transaction_data)
 
