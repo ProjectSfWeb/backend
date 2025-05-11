@@ -20,3 +20,11 @@ def entrance(request: Request):
 @router.get("/register2")
 def registration(request: Request):
     return templates.TemplateResponse(name="Registration.html", context={"request": request})
+
+@router.get("/change")
+def registration(request: Request):
+    return templates.TemplateResponse(name="Change.html", context={"request": request})
+
+@router.get("/delete")
+def registration(request: Request):
+    return templates.TemplateResponse(name="Delete.html", context={"request": request})
