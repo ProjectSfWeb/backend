@@ -37,17 +37,18 @@
 <!--    <p>name="Sign up" type="submit" value="Sign up" style="vertical-align: middle"<button>Sign up</button> </p>-->
     </fieldset>
 </form>
-<form>
-    <fieldset align="center" style="width: 50%">
+<form method="post">
+    <fieldset align="center" style="width: 61%">
         <legend align="left"><h4>Filters</h4></legend>
         <div align="left">
             <ul style="display: inline; margin-left: -50px" role="list">
-            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Date"><option>Start date</option><option>End date</option></select></li>
-            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Type"><option>Transaction type</option></select></li>
-            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="In"><option>Transaction in</option><option>Transaction out</option></select></li>
-            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Successful"><option>Successful</option><option>Canceled</option></select></li>
-            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Banks"><option name="Banks">Banks</option><option></option></select></li>
-            <li style="display: inline; border: 1px solid #000; padding: 3px" ><select name="Category"><option>Category</option><option></option></select></li></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Date"><option>Start date</option><option>End date</option><option>Exact date</option></select></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Type"><option>Transaction in</option><option>Transaction out</option></select></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Status"><option>Status</option><option>Successful</option><option>Canceled</option></select></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="INN"><option>INN</option><option></option></select></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Banks"><option>Sender Banks</option><option>Receiver Bank</option></select></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px; margin-right: 10px" ><select name="Category"><option>Category</option><option></option></select></li>
+            <li style="display: inline; border: 1px solid #000; padding: 3px;" ><select name="Min"><option>Operation min</option><option>Operation max</option></select></li>
             </ul>
         </div>
     </fieldset>
