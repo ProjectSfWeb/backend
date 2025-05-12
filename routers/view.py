@@ -17,8 +17,8 @@ def get_balance(request: Request):
 def entrance(request: Request):
     return templates.TemplateResponse(name="Entrance.html", context={"request": request})
 
-#user=Depends(register)
-@router.post("/register2")
+
+@router.get("/register2")
 def registration(request: Request):
     return templates.TemplateResponse(name="Registration.html", context={"request": request})
 
