@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.templating import Jinja2Templates
 from .balance import calculate_balance
 from .auth import register, login
+from .filters import filter_transactions
 
 
 router = APIRouter(prefix="/front", tags=["Front"])
@@ -17,7 +18,7 @@ def entrance(request: Request):
     return templates.TemplateResponse(name="Entrance.html", context={"request": request})
 
 #user=Depends(register)
-@router.get("/register2")
+@router.post("/register2")
 def registration(request: Request):
     return templates.TemplateResponse(name="Registration.html", context={"request": request})
 
